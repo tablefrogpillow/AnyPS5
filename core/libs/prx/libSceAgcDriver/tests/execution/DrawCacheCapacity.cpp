@@ -191,9 +191,10 @@ void ReservedDecodeUserDataIsCharged() {
 }
 
 int main(int argc, char** argv) {
+    const auto test = argc == 2 ? std::string_view(argv[1]) : std::string_view{};
+    const bool reservedUserDataTest = test == "--decode-reserved-user-data";
     try {
-        const auto test = argc == 2 ? std::string_view(argv[1]) : std::string_view{};
-        if (test == "--decode-reserved-user-data") {
+        if (reservedUserDataTest) {
             ReservedDecodeUserDataIsCharged();
             return 0;
         }
@@ -210,7 +211,7 @@ int main(int argc, char** argv) {
         return 0;
     } catch (const std::exception& error) {
         std::cerr << error.what() << '\n';
-        AgcDriverShutdown_nid_postfix();
+        if (!reservedUserDataTest) AgcDriverShutdown_nid_postfix();
         return 1;
     }
 }
